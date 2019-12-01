@@ -23,18 +23,22 @@ Session(app)
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
+app.debug = 1
+app.DATABASE_URL='postgres://ctiazebqyiyhlf:349007f1e4d3c17da2a3c149efb9ef17e521f4a38c2c0c570968c4e5735cefb1@ec2-174-129-210-249.compute-1.amazonaws.com:5432/daj1jc00ojlhg6'
+
 def main():
     flights = db.execute('SELECT origin, destination, duration FROM flights').fetchAll()
 
 @app.route("/")
 def index():
     try:
-        if active_login_token == False:
-            return render_template('index.html')
         return render_template('index.html')
+        #if active_login_token == False:
+        #    return render_template('login-register.html')
+        
     except Exception as err:
         print(repr(err))
-        return render_template('error.html')
+        return render_template('error.html', err = repr(err))
     
 
 @app.route('/register')
