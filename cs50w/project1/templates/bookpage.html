@@ -1,0 +1,23 @@
+{% extends 'basetemplate.html' %}
+
+{% block title %} Index {% endblock %}
+
+
+{% block content %}
+{% if to_send %}
+    <div>tosend found</div>
+{% endif %} 
+<div id='book-box'> 
+    <div class='left-column'>
+        <div>isbn: {{ to_send[isbn]['isbn']}}</div>
+        <div>title: {{to_send[isbn]['title']}}</div>
+        <div>author: {{to_send[isbn]['author']}}</div>
+        </div>
+        <div class='right-column'>
+        <div>pub_date: {{to_send[isbn]['pub_date']}}</div>
+        <div>ratings_count: {{to_send[isbn]['ratings_count']}}</div>
+        <div>average_score: {{to_send[isbn]['average_score']}}</div>
+        </div>
+    
+</div>
+{% endblock %}

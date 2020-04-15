@@ -5,7 +5,6 @@
   <title></title>
   <link rel='stylesheet' href='static/styles/styles_main.css'>
   <meta charset='UTF-8'>
-  <link>
   <script src="frontend/frontend.js"></script>
 </head>
 
@@ -13,13 +12,15 @@
     <div id='main-panel'><h1>ISBN check</h1>
         <div id='content'>
             
-        <form id='search-form'>
+        <form id='search-form' method="POST" name='searchForm'>
             <input type='text' id='search-input' placeholder='Please enter ISBN'>
             <button type='submit'><h2>Submit</h2></button>
         </form>
     
         <div id='book-info'>
-            
+            {% if g.message %}
+                {{ g.message }}
+            {% endif %}
 
         </div>
 

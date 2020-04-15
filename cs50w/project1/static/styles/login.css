@@ -1,0 +1,23 @@
+#loginregister {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    margin: 10% auto auto auto;
+    font-size: 2.5em;
+    text-align: center;
+}
+
+#loginregister > * {
+    font-size: 1em;
+}
+
+.lr-buttons{
+    width: auto;
+}
+
+.lr-buttons > * {
+    width: auto;
+    font-size: 1em;
+ }
+
+ 

@@ -1,7 +1,15 @@
 {% extends 'basetemplate.html' %}
 
-{% block title %} Index {% endblock %}
-
+{% block title %}Testing page{% endblock %}
 {% block content %}
-test passed
+
+<div id='book-info'>
+    {% if bookshelf %}
+        <div> bookshelf found</div>
+        {% for x in bookshelf %}
+            <div>{{x['title']}} : {{x['author']}} </div>
+        {%endfor%}
+    {% endif %}
+
+</div>
 {% endblock %}

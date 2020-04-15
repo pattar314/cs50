@@ -1,0 +1,45 @@
+{% extends 'basetemplate.html' %}
+
+{% block title %} Index {% endblock %}
+
+
+{% block content %}
+    {% if to_send %}
+        <div> it worked</div>
+    {% endif %}
+    <div id='book-box'>
+        {% for x in to_send %}
+            <div>{{x}}</div>
+        {% endfor %}
+    {% endif %}
+
+    
+        {% for isbn in isbn_list %}
+            <div> {{isbn}}</div>
+        {% endfor %}
+    {% endif %} 
+</div>
+{% endblock %}
+
+
+
+
+<!--
+
+<div class='search-result'>
+                <a href='/book_page/{{isbn}}'>
+                    <div class='left-column'>
+                        <div>isbn: {{ to_send['isbn']['isbn']}}</div>
+                        <div>title: {{to_send['isbn']['title']}}</div>
+                        <div>author: {{to_send['isbn']['author']}}</div>
+                    </div>
+                    <div class='right-column'>
+                        <div>pub_date: {{to_send['isbn']['pub_date']}}</div>
+                        <div>ratings_count: {{to_send['isbn']['ratings_count']}}</div>
+                        <div>average_score: {{to_send['isbn']['average_score']}}</div>
+                    </div>
+                </a>
+            </div>
+        
+        
+        -->

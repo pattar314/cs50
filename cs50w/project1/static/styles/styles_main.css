@@ -5,7 +5,6 @@
 }
 
 body {
-    background-color: #808080;
     overflow: hidden;
     overflow-y: auto;
     display: flex;
@@ -46,10 +45,6 @@ body {
     color: white;
 }
 
-#search {
-    width: 100%;
-}
-
 #search-input { 
     width: 100%;
 }
@@ -70,8 +65,6 @@ body {
 #main-panel {
     min-height: 100vh;
     width: 75vw;
-    margin: auto;
-    background-color: gray;
     text-align: center;
 }
 
@@ -148,11 +141,80 @@ body {
 #search-input {
     text-align: center;
     font-size: 20px;
+    flex: 9;
+}
+
+#submit-button {
+    background-color: rgba(0, 0, 0, 0.3);
+    flex: 1;
 }
 
 #book-info {
-    display: none;
     min-width: 90%;
     min-height: 95%;
-    background-color: burlywood;
+}
+
+.found-book {
+    border: solid black .2px;
+    width: 100vw;
+    display: flex;
+}
+
+#content {
+    height: auto;
+    width: 100%;
+    background-color: whitesmoke;
+}
+
+#book-box {
+    border: solid black .5px;
+    display: flex;
+}
+
+.caution {
+    color: red;
+}
+
+#alreadyuser {
+    display: none;
+}
+
+#badpass {
+    display: none;
+}
+
+#options {
+    border: none;
+}
+
+#message{
+    background-color: aqua;
+}
+
+#submit-button{
+    width: 100%;
+}
+
+.found-book{
+    display: flex;
+    flex-direction: row;
+    color: black;
+}
+
+.float-right{
+    margin-left: auto;
+    margin-right: 3vw;
+}
+
+.left-column{
+    display: flex;
+    flex-direction: column;
+    margin-left: 1vw;
+}
+
+.right-column{
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: 3vw;
 }

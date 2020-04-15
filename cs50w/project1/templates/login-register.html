@@ -1,10 +1,32 @@
-{% extends basetemplate.html %}
+{% extends 'basetemplate.html' %}
+{% block head %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{% block title %}Login/register{% endblock %}</title>
+  <link rel='stylesheet' href='static/styles/styles_main.css'>
+  <link rel='stylesheet' href='static/styles/login.css'>
+  <meta charset='UTF-8'>
+  <link>
+  <script src="frontend/frontend.js"></script>
+</head>
+{% endblock %}
+
+{% block search %}{% endblock %}
 
 {% block content %}
 
-<div id='login'>
-    <input type='text' id='username'>
-    <input type='password' id='password'>
+<div id='loginregister'>
+    <b class='caution' id='alreadyuser'>'There is already a user with that username'</b>
+    <b class='caution' id='badpass'>'please enter a different password that follows the rules'</b>
+    Login/Register 
+    <input type='text' id='username' placeholder="Username">
+    <input type='password' id='password' placeholder="Password">
+    <a class='lr-buttons'href='/login'><button id='login-button' action='/login' method='push'>Login</button></a>
+    <a class='lr-buttons' href='/'><button id='register-button' action='register()' method='push'>Register</button></a>
 </div>
 
 {% endblock %}
+
+<!-- -->

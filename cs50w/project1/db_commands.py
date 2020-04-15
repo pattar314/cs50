@@ -21,10 +21,14 @@ Session(app)
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
+def insert_book(isbn, author, title, date):
+    newBook = {'isbn': isbn, 'author': author, 'title': title, 'date': date}
+    db.execute(f'INSERT INTO books (isbn, author, title, date) VALUES ({ isbn }, {author}, {title}, {date})')
+
 def import_db():
-    flights = db.execute("SELECT id, origin, destination, duration, FROM flights ").fetchall()
-    for flight in flights:
-        print(f'Flight {flight.id}: {flight.origin} to {flight.destination}, {flight.duration} minutes')
+    bookshelf = db.execute("SELECT isbn, author, title, date, FROM books").fetchall()
+    for book in bookshelf:
+        print(f'Book {book.isbn} is {book.title} by {book.author} in {book.date}')
 
 if __name__ == "__main__":
     import_db()

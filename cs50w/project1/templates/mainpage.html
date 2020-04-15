@@ -1,0 +1,18 @@
+{% extends 'basetemplate.html' %}
+
+{% block title %} Search books {% endblock %}
+
+{% block content %}
+
+<div id='search-area'>
+    <b class='caution' id='alreadyuser'>'There is already a user with that username'</b>
+    <b class='caution' id='badpass'>'please enter a different password that follows the rules'</b>
+    Login/Register 
+    <input type='text' id='username' placeholder="Username">
+    <input type='password' id='password' placeholder="Password">
+    <a class='lr-buttons' href='/login'><button id='login-button' action='/login' method='push'>Login</button></a>
+    <a class='lr-buttons' href='/register'><button id='register-button' action='/register' method='push'>Register</button></a>
+</div>
+    
+</div>
+{% endblock %}
