@@ -1,3 +1,4 @@
+
 {% extends 'basetemplate.html' %}
 
 {% block title %} Index {% endblock %}
@@ -11,13 +12,11 @@
         {% for x in to_send %}
             <div>{{x}}</div>
         {% endfor %}
-    {% endif %}
 
     
         {% for isbn in isbn_list %}
             <div> {{isbn}}</div>
-        {% endfor %}
-    {% endif %} 
+        {% endfor %} 
 </div>
 {% endblock %}
 
