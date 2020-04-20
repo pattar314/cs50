@@ -46,7 +46,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/cognitivepat/Google Drive/programming_projects/cs50/cs50w/project1/env"
+VIRTUAL_ENV='/mnt/c/Users/darkg/programming_stuff/cs50/cs50w/project1/env'
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

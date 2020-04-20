@@ -138,18 +138,13 @@ def search():
         for x in range(result_num):
             book_object = search_results[x]
             isbn = book_object[0]
-            
             title = book_object[1]
-            
             author = book_object[2]
-
             date = book_object[3]
-            
             review_info = requests.get('https://www.goodreads.com/book/review_counts.json', params={'key': '7CXiGcXrotgoPlcPvEFZMw', 'isbns': isbn, 'format': 'json'}).json()
+            
             temp = {}
-            
-            temp['isbn'] = isbn
-            
+            temp['isbn'] = isbn            
             temp['title'] = title
             temp['author'] = author
             temp['pub_date'] = date
@@ -158,9 +153,10 @@ def search():
             to_send.append(temp)
             isbn_list.append(isbn)
             
-        print('to send = ', json.dumps(to_send))
+        print('to send = ', to_send)
+        print(to_send[1])
         print('isbn list =', isbn_list)
-        return render_template('bookpage.html', to_send=to_send, isbn_list=isbn_list)
+        return render_template('search_results.html', to_send=to_send, isbn_list=isbn_list)
             
         
     except Exception as err:

@@ -169,6 +169,13 @@ body {
 #book-box {
     border: solid black .5px;
     display: flex;
+    flex-direction: column; 
+}
+
+.search-result{
+    display: flex;
+    border-top: solid black 1px;
+    margin-bottom: 1.5vh;
 }
 
 .caution {
