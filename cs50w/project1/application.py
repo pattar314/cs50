@@ -65,7 +65,7 @@ def generate_book_page(isbn):
     to_send[isbn]['pub_date'] = book_object[0][3]
     to_send[isbn]['ratings_count'] = review_info['books'][0]['ratings_count']
     to_send[isbn]['average_score'] = review_info['books'][0]['average_rating']
-    print(to_send)
+    to_send[isbn]['review_list'] = db.execute(f"SELECT * FROM reviews WHERE isbn = '{isbn}'").fetchall()
     return render_template('bookpage.html', to_send = to_send, isbn = isbn)
     
   except Exception as err:
@@ -127,14 +127,14 @@ def search():
         search_term = int('0345418263')
     print(f'search term is {search_term}')
   # Generate page for single selected book
-    
     try:
         counter = 0
         to_send = []
         isbn_list = []
         search_results = db.execute("SELECT * FROM books WHERE lower(author) LIKE '%{0}%' OR lower(title) like '%{0}%' OR isbn LIKE '%{0}%'".format(search_term)).fetchall()
-        print(len(list(search_results)))
-        result_num = len(search_results) 
+        result_num = len(search_results)
+        print(result_num)
+         
         for x in range(result_num):
             book_object = search_results[x]
             isbn = book_object[0]
