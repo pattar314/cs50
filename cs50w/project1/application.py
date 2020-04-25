@@ -1,6 +1,6 @@
 import os, requests, json
 
-from flask import Flask, session, render_template, g, request, jsonify
+from flask import Flask, session, render_template, request, jsonify, make_response
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
@@ -10,7 +10,6 @@ active_login_token = False
 
 app = Flask(__name__)
 db = SQLAlchemy()
-
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
@@ -33,7 +32,7 @@ app.debug = 1
 @app.route("/")
 def index():
     try:  
-        return render_template('login-register.html')
+        return render_template('login.html')
         
     except Exception as err:
         print(repr(err))
@@ -43,7 +42,12 @@ def index():
 @app.route("/login")
 def loginregister():
     try:
-        return render_template('login-register.html')
+        if not session["username"]:
+            return render_template('login.html')
+        
+        else:
+            make_response()
+            return render_template('homepage.html')
     except Exception as err:
         print(repr(err))
         return render_template('error.html', err = repr(err))
@@ -77,7 +81,8 @@ def generate_book_page(isbn):
 def add_review(isbn):
   rating = request.form['rating']
   review = request.form['review_text']
-  review_to_add = db.execute('INSERT INTO reviews(%s, %s, %s)', isbn, rating, review)
+  username = request.session['username']
+  review_to_add = db.execute('INSERT INTO reviews(%s, %s, %s, %s)', isbn, rating, review, username)
   print(review_to_add.fetchall())
 
     
@@ -165,10 +170,35 @@ def search():
     
 
 
-@app.route('/register')
+@app.route('/register', methods=["POST"])
 def register():
-    #temp_user = db.execute(f'SELECT * FROM users WHERE username = { userName }')
-    print('test1')
+    try:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        try:
+            #check to see if user already exists
+            user_check = db.execute(f'SELECT * FROM users WHERE username == { username }')
+        
+        except:
+            #if user does not already exist then insert them into the db
+            try:
+                db.execute(f"INSERT INTO users (username)  VALUES ({username})")
+                new_user = db.execute(f'SELECT * FROM users WHERE username == { username }').fetchall()
+                user_id = new_user[0][0]
+                print('id is ' + user_id)
+                db.execute(f"INSERT INTO pwd (userid, passhash) VALUES ({user_id}, {new_user[0][1]})")
+                print('success: ' + db.execute(f"SELECT * FROM pwd WHERE userid == {user_id }"))
+
+
+
+
+            return render_template("homepage.html")
+
+        
+    except Exception as err:
+        print(repr(err))
+        return render_template('error.html', err = repr(err))
+
     
 
 ''' ------------------------------------------------------

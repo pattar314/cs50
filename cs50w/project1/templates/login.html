@@ -1,0 +1,31 @@
+{% extends 'basetemplate.html' %}
+{% block head %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{% block title %}Login/register{% endblock %}</title>
+  <link rel='stylesheet' href='static/styles/styles_main.css'>
+  <link rel='stylesheet' href='static/styles/login.css'>
+  <meta charset='UTF-8'>
+  <link>
+  <script src="frontend/frontend.js"></script>
+</head>
+{% endblock %}
+
+{% block search %}{% endblock %}
+
+{% block content %}
+
+<div id='login'>
+    Login 
+    <input type='text' id='username' placeholder="Username">
+    <input type='password' id='password' placeholder="Password">
+    <button id='login-button' action='/login' method='POST'>Login</button>
+</div>
+
+<div>Not already a user? Click here</div>
+
+{% endblock %}
+
+<!-- -->

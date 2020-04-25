@@ -1,32 +1,16 @@
-<!DOCTYPE html>
-<html>
+{% extends 'basetemplate.html' %}
 
-<head>
-  <title></title>
-  <link rel='stylesheet' href='static/styles/styles_main.css'>
-  <meta charset='UTF-8'>
-  <script src="frontend/frontend.js"></script>
-</head>
+{% block title %}Homepage{% endblock %}
+    {% block content %}
 
-<body>
-    <div id='main-panel'><h1>ISBN check</h1>
-        <div id='content'>
-            
-        <form id='search-form' method="POST" name='searchForm'>
-            <input type='text' id='search-input' placeholder='Please enter ISBN'>
-            <button type='submit'><h2>Submit</h2></button>
-        </form>
-    
         <div id='book-info'>
-            {% if g.message %}
-                {{ g.message }}
+            {% if bookshelf %}
+                <div> bookshelf found</div>
+                {% for x in bookshelf %}
+                    <div>{{x['title']}} : {{x['author']}} </div>
+                {%endfor%}
+            {% else %}
             {% endif %}
 
-        </div>
-
-    </div>
-    </div>
-
-  
-</body>
-<html>
+</div>
+{% endblock %}
