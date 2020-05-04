@@ -4,7 +4,7 @@
 <html>
 
 <head>
-  <title>{% block title %}Login/register{% endblock %}</title>
+  <title>{% block title %}Register{% endblock %}</title>
   <link rel='stylesheet' href='static/styles/styles_main.css'>
   <link rel='stylesheet' href='static/styles/login.css'>
   <meta charset='UTF-8'>
@@ -18,13 +18,16 @@
 {% block content %}
 
 <div id='loginregister'>
-    <b class='caution' id='alreadyuser'>'There is already a user with that username'</b>
-    <b class='caution' id='badpass'>'please enter a different password that follows the rules'</b>
     Login/Register 
-    <input type='text' id='username' placeholder="Username">
-    <input type='password' id='password' placeholder="Password">
-    <button id='register-button' action='/register' method='POST'>Register</button>
+  <form id='registration-form' action='/register' method='POST'>
+    <input type='text' id='username' name='username' placeholder="Username">
+    <input type='password' id='password' name='password' placeholder="Password">
+    <button id='register-button' type='submit'>Register</button>
+  </form>
 </div>
+{% if message %}
+  {{message}}
+{% endif %}
 
 {% endblock %}
 

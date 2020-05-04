@@ -1,6 +1,6 @@
 import os, requests, json
 
-from flask import Flask, session, render_template, request, jsonify, make_response
+from flask import Flask, session, render_template, request, jsonify, make_response, redirect
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
@@ -18,6 +18,7 @@ if not os.getenv("DATABASE_URL"):
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config['FLASK_APP'] = 'application.py'
+# app.config['DATABASE_URL=postgres://ctiazebqyiyhlf:349007f1e4d3c17da2a3c149efb9ef17e521f4a38c2c0c570968c4e5735cefb1@ec2-174-129-210-249.compute-1.amazonaws.com:5432/daj1jc00ojlhg6']
 app.config['JSON_SORT_KEYS'] = False
 Session(app)
 
@@ -29,25 +30,49 @@ app.debug = 1
 
 # TODO: add function to check and see if the database/table exists. If not it builds it. but if it does it loads it
 
+def check_logged_in():
+    if requests.cookies.get('logged_in') == True:
+        pass
+    else:
+        redirect('/login')
+
+
 @app.route("/")
 def index():
-    try:  
-        return render_template('login.html')
+    check_logged_in()
+    try:
+        return render_template('index.html')
+
+
         
     except Exception as err:
         print(repr(err))
         return render_template('error.html', err = repr(err))
-    return render_template('index.html')
-
+    
 @app.route("/login")
-def loginregister():
+def login():
+    check_logged_in()
     try:
-        if not session["username"]:
-            return render_template('login.html')
-        
-        else:
-            make_response()
-            return render_template('homepage.html')
+        username = ''
+        password = ''
+        if request.method == "POST":
+            try:
+                fetched_pwd = db.execute(f"SELECT pwd.passhash FROM pwd INNER JOIN users ON users.userid=pwd.userid WHERE users.username = '{username}'").fetchall()[0][0]
+                username = request.form.get('username')
+                password = request.form.get('password')
+                
+                if not session["username"]:
+                    return render_template('login.html')
+            
+                else:
+                    res = make_response(render_template('homepage.html'))
+                    res.set_cookie('username', username)
+                    return res
+
+            except Exception as err:
+                print(repr(err))
+                return render_template('error.html', err = repr(err))
+
     except Exception as err:
         print(repr(err))
         return render_template('error.html', err = repr(err))
@@ -56,34 +81,36 @@ def loginregister():
 
 @app.route("/book_page/<string:isbn>")
 def generate_book_page(isbn):
+    check_logged_in()
   # Generate page for single selected book
-  try:
-    counter = 0
-    to_send = {}
-    to_send[isbn] = {}
-    book_object = db.execute(f"SELECT * FROM books WHERE isbn LIKE '%{isbn}%'").fetchall()
-    review_info = requests.get('https://www.goodreads.com/book/review_counts.json', params={'key': '7CXiGcXrotgoPlcPvEFZMw', 'isbns': isbn, 'format': 'json'}).json()
-    to_send[isbn]['isbn'] = isbn
-    to_send[isbn]['title'] = book_object[0][1]
-    to_send[isbn]['author'] = book_object[0][2]
-    to_send[isbn]['pub_date'] = book_object[0][3]
-    to_send[isbn]['ratings_count'] = review_info['books'][0]['ratings_count']
-    to_send[isbn]['average_score'] = review_info['books'][0]['average_rating']
-    to_send[isbn]['review_list'] = db.execute(f"SELECT * FROM reviews WHERE isbn = '{isbn}'").fetchall()
-    return render_template('bookpage.html', to_send = to_send, isbn = isbn)
-    
-  except Exception as err:
-    print(repr(err))
-    return render_template('error.html', err = repr(err))
+    try:
+        counter = 0
+        to_send = {}
+        to_send[isbn] = {}
+        book_object = db.execute(f"SELECT * FROM books WHERE isbn LIKE '%{isbn}%'").fetchall()
+        review_info = requests.get('https://www.goodreads.com/book/review_counts.json', params={'key': '7CXiGcXrotgoPlcPvEFZMw', 'isbns': isbn, 'format': 'json'}).json()
+        to_send[isbn]['isbn'] = isbn
+        to_send[isbn]['title'] = book_object[0][1]
+        to_send[isbn]['author'] = book_object[0][2]
+        to_send[isbn]['pub_date'] = book_object[0][3]
+        to_send[isbn]['ratings_count'] = review_info['books'][0]['ratings_count']
+        to_send[isbn]['average_score'] = review_info['books'][0]['average_rating']
+        to_send[isbn]['review_list'] = db.execute(f"SELECT * FROM reviews WHERE isbn = '{isbn}'").fetchall()
+        return render_template('bookpage.html', to_send = to_send, isbn = isbn)
+        
+    except Exception as err:
+        print(repr(err))
+        return render_template('error.html', err = repr(err))
     
 
 @app.route("/submit_review", methods=['POST'])
 def add_review(isbn):
-  rating = request.form['rating']
-  review = request.form['review_text']
-  username = request.session['username']
-  review_to_add = db.execute('INSERT INTO reviews(%s, %s, %s, %s)', isbn, rating, review, username)
-  print(review_to_add.fetchall())
+    check_logged_in()
+    rating = request.form.get('rating')
+    review = request.form.get('review_text')
+    username = request.session['username']
+    review_to_add = db.execute('INSERT INTO reviews(%s, %s, %s, %s)', isbn, rating, review, username)
+    print(review_to_add.fetchall())
 
     
 
@@ -127,6 +154,7 @@ def return_error():
 
 @app.route("/search", methods=['POST', 'GET'])
 def search():
+    check_logged_in()
     search_term = request.form.get('searchBar')
     if search_term == "None":
         search_term = int('0345418263')
@@ -170,35 +198,54 @@ def search():
     
 
 
-@app.route('/register', methods=["POST"])
+@app.route('/register', methods=["POST", "GET"])
 def register():
-    try:
-        username = request.form.get('username')
-        password = request.form.get('password')
+    username = ''
+    password = ''
+    if request.method == "POST":
         try:
-            #check to see if user already exists
-            user_check = db.execute(f'SELECT * FROM users WHERE username == { username }')
-        
-        except:
-            #if user does not already exist then insert them into the db
+            username = request.form.get('username')
+            password = request.form.get('password')
             try:
-                db.execute(f"INSERT INTO users (username)  VALUES ({username})")
-                new_user = db.execute(f'SELECT * FROM users WHERE username == { username }').fetchall()
-                user_id = new_user[0][0]
-                print('id is ' + user_id)
-                db.execute(f"INSERT INTO pwd (userid, passhash) VALUES ({user_id}, {new_user[0][1]})")
-                print('success: ' + db.execute(f"SELECT * FROM pwd WHERE userid == {user_id }"))
+                #check to see if user already exists
+                user_check = db.execute(f"SELECT * FROM users WHERE username == '{ username }'")
+                
+            
+            except Exception as err:
+                print('no user by that name')
+                db.rollback()
+                #if user does not already exist then insert them into the db
+                try:
+                    db.execute(f"INSERT INTO users (username) VALUES ('{username}')")
+                    print(f'username is {username}')
+                    new_user = db.execute(f"SELECT * FROM users WHERE username = '{ username }'").fetchall()
+                    print(new_user)
+                    user_id = str(new_user[0][0])
+                    print('userid is ' + user_id)
+                    db.execute(f"INSERT INTO pwd (userid, passhash) VALUES ('{user_id}', '{password}')")
+                    print('success: ' + str(db.execute(f"SELECT * FROM pwd WHERE userid = '{user_id}'").fetchall()))
+                    db.commit()
+                    res = make_response(render_template("homepage.html", message=f'user made {user_id}, {username}, {password}'))
+                    res.set_cookie('username', username)
+                    return res
 
+                except Exception as err:
+                    
+                    print(repr(err))
+                    db.rollback()
+                    return render_template("register.html", message='Please try again')
+    
+        except Exception as err:
+                print(repr(err))
+                return render_template('error.html', err = repr(err))
 
-
-
-            return render_template("homepage.html")
+    
+    
+    elif request.method == "GET":
+        return render_template("register.html")
 
         
-    except Exception as err:
-        print(repr(err))
-        return render_template('error.html', err = repr(err))
-
+        
     
 
 ''' ------------------------------------------------------
@@ -340,3 +387,8 @@ def create_post(book_object, review_info):
 
 #db response example
 #[('0553803700', 'I, Robot', 'Isaac Asimov', 1950)]
+
+
+
+
+# test = db.execute(f"SELECT pwd.passhash FROM pwd INNER JOIN users ON users.userid=pwd.userid WHERE users.username = '{username}'").fetchall()[0][0]

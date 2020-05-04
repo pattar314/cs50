@@ -228,3 +228,7 @@ def generate_book_page(isbn):
     print(to_send)
     render_template('bookpage.html', to_send)
 # submitted_reviews = db.execute(f"SELECT * FROM reviews WHERE isbn = '{ isbn }'").fetchall()
+
+
+
+#SELECT users.userid, users.username, pwd.passhash FROM users INNER JOIN pwd ON users.userid=pwd.userid

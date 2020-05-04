@@ -11,6 +11,8 @@
                 {%endfor%}
             {% else %}
             {% endif %}
-
 </div>
+{% if message %}
+  {{message}}
+{% endif %}
 {% endblock %}

@@ -4,7 +4,7 @@
 <html>
 
 <head>
-  <title>{% block title %}Login/register{% endblock %}</title>
+  <title>{% block title %}Login{% endblock %}</title>
   <link rel='stylesheet' href='static/styles/styles_main.css'>
   <link rel='stylesheet' href='static/styles/login.css'>
   <meta charset='UTF-8'>
@@ -24,7 +24,7 @@
     <button id='login-button' action='/login' method='POST'>Login</button>
 </div>
 
-<div>Not already a user? Click here</div>
+<div>Not already a user? <a href='/register'> Click here</a></div>
 
 {% endblock %}
 

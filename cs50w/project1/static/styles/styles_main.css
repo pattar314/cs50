@@ -29,6 +29,11 @@ body {
     text-align: center;
 }
 
+#login {
+    width: 100vw;
+    display: flex;
+}
+
 
 
 #logo {
