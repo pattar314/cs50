@@ -1,4 +1,4 @@
-{% extends 'basetemplate.html' %}
+{% extends 'template.html' %}
 
 {% block title %} Error {% endblock %}
 
@@ -6,6 +6,9 @@
 
     <div id='error-content'>
         <div id='error-message'>You have encountered an error</div>
+        {% if message %}
+        {{message}}
+        {% endif %}
     </div>
 
 {% endblock %}

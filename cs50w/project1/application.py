@@ -1,6 +1,6 @@
 import os, requests, json
 
-from flask import Flask, session, render_template, request, jsonify, make_response, redirect
+from flask import Flask, session, render_template, request, jsonify, make_response, redirect, url_for
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
@@ -31,51 +31,57 @@ app.debug = 1
 # TODO: add function to check and see if the database/table exists. If not it builds it. but if it does it loads it
 
 def check_logged_in():
-    if requests.cookies.get('logged_in') == True:
+    if request.cookies.get('logged_in') == 'True':
+        print('it was true')
         pass
     else:
-        redirect('/login')
+        return  redirect(url_for('login'))
 
 
-@app.route("/")
-def index():
-    check_logged_in()
-    try:
-        return render_template('index.html')
 
-
-        
-    except Exception as err:
-        print(repr(err))
-        return render_template('error.html', err = repr(err))
-    
-@app.route("/login")
+@app.route("/", methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    check_logged_in()
     try:
         username = ''
         password = ''
         if request.method == "POST":
             try:
-                fetched_pwd = db.execute(f"SELECT pwd.passhash FROM pwd INNER JOIN users ON users.userid=pwd.userid WHERE users.username = '{username}'").fetchall()[0][0]
                 username = request.form.get('username')
                 password = request.form.get('password')
+                try:
+                    fetched_pwd = db.execute(f"SELECT pwd.passhash FROM pwd INNER JOIN users ON users.userid=pwd.userid WHERE users.username = '{username}'").fetchall()[0][0]
+                    print(f'fetched password is {fetched_pwd}')
+                    if password != fetched_pwd:
+                        return render_template('login.html', message='no user by that name')
+                except Exception as err:
+                    print('user not found')
+                    return render_template('login.html', message='no user by that name')
                 
-                if not session["username"]:
-                    return render_template('login.html')
-            
-                else:
-                    res = make_response(render_template('homepage.html'))
-                    res.set_cookie('username', username)
+                
+                if fetched_pwd == password:
+                    res = make_response(render_template('homepage.html', message=f'Please enter search'))
+                    print('test1')
+                    res.set_cookie('username', f'{username}')
+                    print('test2')
+                    res.set_cookie('logged_in', 'True')
+                    print('test3')
+                    print(username, password, 'it worked')
+                    session['logged_in'] = "True" 
+                    session['username'] = username
+                    print('test4')
                     return res
 
             except Exception as err:
                 print(repr(err))
-                return render_template('error.html', err = repr(err))
+                return render_template('error.html', err = repr(err), message='error1')
 
+        else:
+            return render_template('login.html', message='please log in')
+            
     except Exception as err:
         print(repr(err))
-        return render_template('error.html', err = repr(err))
+        return render_template('error.html', err = repr(err), message='error2')
 
 
 
@@ -103,14 +109,19 @@ def generate_book_page(isbn):
         return render_template('error.html', err = repr(err))
     
 
-@app.route("/submit_review", methods=['POST'])
+@app.route("/submit_review/<string:isbn>", methods=['POST'])
 def add_review(isbn):
     check_logged_in()
     rating = request.form.get('rating')
     review = request.form.get('review_text')
-    username = request.session['username']
+    username = session['username']
+    print(isbn, rating, review, username)
+    session['isbn'] = isbn
+    
     review_to_add = db.execute('INSERT INTO reviews(%s, %s, %s, %s)', isbn, rating, review, username)
     print(review_to_add.fetchall())
+    message = 'review added'
+    return redirect(f'/book_page/{isbn}', message=message, isbn = isbn)
 
     
 
@@ -198,6 +209,7 @@ def search():
     
 
 
+
 @app.route('/register', methods=["POST", "GET"])
 def register():
     username = ''
@@ -238,13 +250,21 @@ def register():
         except Exception as err:
                 print(repr(err))
                 return render_template('error.html', err = repr(err))
-
     
     
     elif request.method == "GET":
         return render_template("register.html")
 
-        
+
+
+@app.route('/logout')
+def logout():
+    res = make_response(render_template("login.html", message='user logged out'))
+    res.set_cookie('username', 'None', max_age=0)
+    res.set_cookie('logged_in', 'False', max_age=0)
+    return res
+
+ 
         
     
 
@@ -392,3 +412,5 @@ def create_post(book_object, review_info):
 
 
 # test = db.execute(f"SELECT pwd.passhash FROM pwd INNER JOIN users ON users.userid=pwd.userid WHERE users.username = '{username}'").fetchall()[0][0]
+
+# if 'username' in session

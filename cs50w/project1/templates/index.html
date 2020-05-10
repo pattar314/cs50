@@ -1,4 +1,4 @@
-{% extends 'basetemplate.html' %}
+{% extends 'template.html' %}
 
 {% block title %}Login{% endblock %}
 {% block content %}
@@ -9,8 +9,9 @@
         {% for x in bookshelf %}
             <div>{{x['title']}} : {{x['author']}} </div>
         {%endfor%}
-    {% else %}
     {% endif %}
-
+    {% if message %}
+    {{message}}
+    {% endif %}
 </div>
 {% endblock %}

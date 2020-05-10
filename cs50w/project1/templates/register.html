@@ -1,4 +1,4 @@
-{% extends 'basetemplate.html' %}
+{% extends 'template.html' %}
 {% block head %}
 <!DOCTYPE html>
 <html>
@@ -17,8 +17,8 @@
 
 {% block content %}
 
-<div id='loginregister'>
-    Login/Register 
+<div id='register'>
+    Register 
   <form id='registration-form' action='/register' method='POST'>
     <input type='text' id='username' name='username' placeholder="Username">
     <input type='password' id='password' name='password' placeholder="Password">
