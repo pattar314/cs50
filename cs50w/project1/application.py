@@ -9,12 +9,14 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 active_login_token = False
 
 app = Flask(__name__)
+
 db = SQLAlchemy()
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
 
 # Configure session to use filesystem
+app.config["SECRET_KEY"] = 'test_key'
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config['FLASK_APP'] = 'application.py'
@@ -42,46 +44,50 @@ def check_logged_in():
 @app.route("/", methods=["GET", "POST"])
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    try:
-        username = ''
-        password = ''
-        if request.method == "POST":
-            try:
-                username = request.form.get('username')
-                password = request.form.get('password')
+    if session['logged_in'] == 'True':
+        return render_template('homepage.html', message='Please enter search query')
+
+    else:    
+        try:
+            username = ''
+            password = ''
+            if request.method == "POST":
                 try:
-                    fetched_pwd = db.execute(f"SELECT pwd.passhash FROM pwd INNER JOIN users ON users.userid=pwd.userid WHERE users.username = '{username}'").fetchall()[0][0]
-                    print(f'fetched password is {fetched_pwd}')
-                    if password != fetched_pwd:
+                    username = request.form.get('username')
+                    password = request.form.get('password')
+                    try:
+                        fetched_pwd = db.execute(f"SELECT pwd.passhash FROM pwd INNER JOIN users ON users.userid=pwd.userid WHERE users.username = '{username}'").fetchall()[0][0]
+                        print(f'fetched password is {fetched_pwd}')
+                        if password != fetched_pwd:
+                            return render_template('login.html', message='no user by that name')
+                    except Exception as err:
+                        print('user not found')
                         return render_template('login.html', message='no user by that name')
+                    
+                    
+                    if fetched_pwd == password:
+                        res = make_response(render_template('homepage.html', message=f'Please enter search'))
+                        print('test1')
+                        res.set_cookie('username', f'{username}')
+                        print('test2')
+                        res.set_cookie('logged_in', 'True')
+                        print('test3')
+                        print(username, password, 'it worked')
+                        session['logged_in'] = "True" 
+                        session['username'] = username
+                        print('test4')
+                        return res
+
                 except Exception as err:
-                    print('user not found')
-                    return render_template('login.html', message='no user by that name')
-                
-                
-                if fetched_pwd == password:
-                    res = make_response(render_template('homepage.html', message=f'Please enter search'))
-                    print('test1')
-                    res.set_cookie('username', f'{username}')
-                    print('test2')
-                    res.set_cookie('logged_in', 'True')
-                    print('test3')
-                    print(username, password, 'it worked')
-                    session['logged_in'] = "True" 
-                    session['username'] = username
-                    print('test4')
-                    return res
+                    print(repr(err))
+                    return render_template('error.html', err = repr(err), message='error1')
 
-            except Exception as err:
-                print(repr(err))
-                return render_template('error.html', err = repr(err), message='error1')
-
-        else:
-            return render_template('login.html', message='please log in')
-            
-    except Exception as err:
-        print(repr(err))
-        return render_template('error.html', err = repr(err), message='error2')
+            else:
+                return render_template('login.html', message='please log in')
+                
+        except Exception as err:
+            print(repr(err))
+            return render_template('error.html', err = repr(err), message='error2')
 
 
 
@@ -112,16 +118,18 @@ def generate_book_page(isbn):
 @app.route("/submit_review/<string:isbn>", methods=['POST'])
 def add_review(isbn):
     check_logged_in()
-    rating = request.form.get('rating')
-    review = request.form.get('review_text')
+    rating = request.form.get('user-rating')
+    review = request.form.get('review-text')
     username = session['username']
     print(isbn, rating, review, username)
     session['isbn'] = isbn
-    
-    review_to_add = db.execute('INSERT INTO reviews(%s, %s, %s, %s)', isbn, rating, review, username)
-    print(review_to_add.fetchall())
+    review_to_add = f"{isbn}, {rating}, {review}, {username}"
+    print('review to add ', review_to_add)
+    db.execute(f"INSERT INTO reviews (isbn, rating, review, username) VALUES ('{isbn}', {rating}, '{review}', '{username}')" )
+    db.commit()
+    #db.execute(f"INSERT INTO pwd (userid, passhash) VALUES ('{user_id}', '{password}')")
     message = 'review added'
-    return redirect(f'/book_page/{isbn}', message=message, isbn = isbn)
+    return redirect(f'/book_page/{isbn}')
 
     
 

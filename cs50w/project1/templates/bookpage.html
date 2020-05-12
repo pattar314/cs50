@@ -1,6 +1,6 @@
 {% extends 'template.html' %}
 
-{% block title %} Index {% endblock %}
+{% block title %} Bookpage {% endblock %}
 
 
 {% block content %}
@@ -15,13 +15,15 @@
         <div>pub_date: {{to_send[isbn]['pub_date']}}</div>
         <div>ratings_count: {{to_send[isbn]['ratings_count']}}</div>
         <div>average_score: {{to_send[isbn]['average_score']}}</div>
+        
     </div>  
     </div>
     <div class='review-area'>
         <div id='review-add-area'>
-            <form id='review-form' action='/submit_review/{{isbn}}' method="POST">
-                <input type='text' id='review-input-text'>
-                <select id='select-rating'>
+            <label for='review-area'>Review  </label>
+            <form id='review-form' action='/submit_review/{{isbn}}' method='POST'>
+                <input type='text' id='review-input-text' name='review-text' placeholder="Please enter review">
+                <select id='select-rating' name='user-rating'>
                     <option disabled value='Rating' default>Rating</option>
                     <option value=1>1</option>
                     <option value=2>2</option>
@@ -34,8 +36,9 @@
         </div>
         <h2><b>Reviews:</b></h2>
         {% for review in to_send[isbn]['review_list'] %}
-            <div class="reviw-list">{{review[2]}}</div><br>
+            <br><div class="reviw-list">Review: {{review[2]}} <br>By: {{review[3]}} <br>Rating: {{review[1]}},</div><br>
             ------------------------------------------------------------------------
+            <br>
         {% endfor %}
     </div>
 </div>

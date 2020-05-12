@@ -1,0 +1,1 @@
+change so that when logged in the user value in session equals the user id instead of the username

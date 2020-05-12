@@ -87,6 +87,10 @@ body {
 
 }
 
+.review-area{
+    border-top: solid black .5px;
+}
+
 #select-rating{
     height: 6vh;
 }
@@ -197,6 +201,11 @@ body {
     display: flex;
     border-top: solid black 1px;
     margin-bottom: 1.5vh;
+}
+
+
+.search-result * {
+    color: black;
 }
 
 .caution {
