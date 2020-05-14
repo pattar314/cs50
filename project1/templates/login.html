@@ -1,0 +1,42 @@
+{% extends 'template.html' %}
+{% block head %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{% block title %}Login{% endblock %}</title>
+  <link rel='stylesheet' href='static/styles/styles_main.css'>
+  <link rel='stylesheet' href='static/styles/login.css'>
+  <meta charset='UTF-8'>
+  <link>
+  <script src="frontend/frontend.js"></script>
+</head>
+{% endblock %}
+
+{% block search %}{% endblock %}
+
+{% block content %}
+
+<div id='login'>  
+    <label for='login-form'>Login:  </label>
+    <form id='login-form' action='/login' method='POST'>
+    <input type='text' name='username' placeholder="Username">
+    <input type='password' name='password' placeholder="Password">
+    <button action='submit' type='submit'>Login</button>
+    </form>
+</div>
+
+<div>Not already a user? <a href='/register'> Click here</a></div>
+
+{% if message %}
+<div>{{message}}</div>
+{% endif %}
+{% if u %}
+<div>{{u}}</div>
+{% endif %}
+{% if p %}
+<div>{{p}}</div>
+{% endif %}
+{% endblock %}
+
+<!-- -->

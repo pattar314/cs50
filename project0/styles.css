@@ -1,0 +1,61 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+#top-nav {
+  position: static;
+  height: auto;
+  width: 100vw;
+  display: flex;
+  background-color: #808080;
+}
+
+#nav-list-of-lists {
+  display: flex;
+  list-style: none;
+  border-bottom: solid black 1px;
+  width: 100vw;
+  height: auto;
+}
+
+#nav-list-of-lists > * {
+  flex: 1;
+  border-right: solid black 1px;
+  text-align: center;
+  margin-top: 5px;
+  color: rgba(0, 0, 0, 0.495);
+}
+
+#nav-list-of-lists a {
+  color: black;
+}
+
+#nav-list-of-lists a:visited {
+  color: rgba(0, 0, 0, 0.502);
+}
+
+.nav-sub {
+  display: none;
+}
+
+#main-content {
+  text-align: center;
+}
+
+#tabular-stuff {
+  margin: 0 auto;
+}
+
+th, td {
+  border: solid black 1px;
+  padding: 15px;
+}
+
+@media screen and (max-width: 1000px) {
+  #nav-list-of-lists {
+    flex-direction: column;
+  }
+}
+
+/*# sourceMappingURL=styles.css.map */

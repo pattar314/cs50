@@ -1,0 +1,17 @@
+{% extends 'template.html' %}
+
+{% block title %}Login{% endblock %}
+{% block content %}
+
+<div id='book-info'>
+    {% if bookshelf %}
+        <div> bookshelf found</div>
+        {% for x in bookshelf %}
+            <div>{{x['title']}} : {{x['author']}} </div>
+        {%endfor%}
+    {% endif %}
+    {% if message %}
+    {{message}}
+    {% endif %}
+</div>
+{% endblock %}

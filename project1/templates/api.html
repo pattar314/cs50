@@ -1,0 +1,20 @@
+{% extends 'template.html' %}
+
+{% block title %}Api page{% endblock %}
+{% block style %} <link rel='stylesheet' type="text/css" href="../static/styles/styles_main.css"> {% endblock %}
+{% block content %}
+{% if message %}
+<div>{{message}}</div>
+{% endif %}
+<div id='book-info'>
+    {% if bookshelf %}
+        <div> bookshelf found</div>
+        {% for x in bookshelf %}
+       <a href='#'><div class='found-book'><div class='float-left'><div class='title'><h4>{{x['title']}}</h4></div><div class='author'><h4>{{x['author']}}</h4></div></div> 
+            <div class='float-right'><div class='isbn'>isbn: {{x['isbn']}}</div><div class='year'>published: {{x['year']}}</div></div>
+        </div></a>
+        <div>test</div>
+        {%endfor%}
+    {% endif %}
+</div>
+{% endblock %}

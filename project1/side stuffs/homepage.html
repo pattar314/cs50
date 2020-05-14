@@ -1,0 +1,9 @@
+{% extends 'template.html' %}
+
+{% block title %}Homepage{% endblock %}
+    {% block content %}
+{% if message %}
+  {{message}}
+  welcome user: {{session['user']}}
+{% endif %}
+{% endblock %}

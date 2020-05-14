@@ -1,0 +1,45 @@
+{% extends 'template.html' %}
+
+{% block title %} Bookpage {% endblock %}
+
+
+{% block content %}
+<div id='book-box'> 
+    <div class='search-result'>
+    <div class='left-column'>
+        <div>isbn: {{ to_send[isbn]['isbn']}}</div>
+        <div>title: {{to_send[isbn]['title']}}</div>
+        <div>author: {{to_send[isbn]['author']}}</div>
+        </div>
+    <div class='right-column'>
+        <div>pub_date: {{to_send[isbn]['pub_date']}}</div>
+        <div>ratings_count: {{to_send[isbn]['ratings_count']}}</div>
+        <div>average_score: {{to_send[isbn]['average_score']}}</div>
+        
+    </div>  
+    </div>
+    <div class='review-area'>
+        <div id='review-add-area'>
+            <label for='review-area'>Review  </label>
+            <form id='review-form' action='/submit_review/{{isbn}}' method='POST'>
+                <input type='text' id='review-input-text' name='review-text' placeholder="Please enter review">
+                <select id='select-rating' name='user-rating'>
+                    <option disabled value='Rating' default>Rating</option>
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                </select>
+                <button type='submit' action='submit'>Submit review</button>
+            </form>
+        </div>
+        <h2><b>Reviews:</b></h2>
+        {% for review in to_send[isbn]['review_list'] %}
+            <br><div class="reviw-list">Review: {{review[2]}} <br>By: {{review[3]}} <br>Rating: {{review[1]}},</div><br>
+            ------------------------------------------------------------------------
+            <br>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
