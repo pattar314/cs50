@@ -19,22 +19,19 @@ def index():
     return "Project 2: TODO"
 
 
-@app.route("/createChannel")
 def createChannel():
     pass
 
 
-@app.route("/registerUser")
 def registerUser():
     pass
 
 
-@app.route("/login")
 def login():
     pass
 
 
-@app.route("/logout")
+
 def logout():
     pass
 
@@ -42,4 +39,3 @@ def logout():
 def send_message():
     pass
 
-@app.route("/")
